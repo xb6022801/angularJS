@@ -1,2 +1,11 @@
 Angular学习笔记
 -----------------
+自动初始化 <html ng-app>
+初始化时机： DOMContentLoaded or document.readyState = 'complete'
+or
+手动初始化： angular.bootstrap(,,)
+延迟启动: when window.name contain NO_DEFER_BOOTSTRAP!， then wait resumeBootstrap()
+
+一些基本概念: template, directive, filter, expression, Model, view, controller, compiler, injector, 
+Dependency injection, module, scope, service
+
