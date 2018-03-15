@@ -9,3 +9,23 @@ or
 一些基本概念: template, directive, filter, expression, Model, view, controller, compiler, injector, 
 Dependency injection, module, scope, service
 
+ng-app='rootId'
+ng-controller = 'DemoController as Peseudo'： 负责管理这个节点以及子节点
+ng-init='expression'
+ng-repeat = 'node in nodeList'
+ng-model
+
+controller: 一个构造函数，用处是倒出一些变量和函数，以便expression和directives调用。
+module: 创建了一个模块，在这个模块上注册了这个controller
+
+可以将与视图无关的逻辑从controller里提出来，封装到services里。
+
+module.controller(controller_name, [...arrays of Dependency services, constructor]): 做成数组模式是怕被js minifer压缩
+参数名字，而常规的依赖注入需要根据参数名字来查找‘被注入对象的’  (invoice1.js)
+
+$http: 它是由angular构造的访问后端API服务，是对XMLHttpRequest和JSONP的封装。
+
+
+
+
+

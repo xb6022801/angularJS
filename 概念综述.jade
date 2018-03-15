@@ -1,0 +1,16 @@
+html(ng-app='invoice1')
+  head
+    meta(charset='utf-8')
+    script(src='http://code.angularjs.org/1.2.25/angular.min.js')
+    script(src="./invoice1.js")
+  body
+    .container(ng-controller='InvoiceController as invoice')
+      | 数量
+      input(type='text', ng-model='invoice.qty')
+      | 单价
+      input(type='text', ng-model='invoice.cost')
+      | 币种
+      select(ng-model='invoice.currency')
+        option(ng-repeat='currency in invoice.currencies')
+          {{ currency }}
+      p 总价： {{ invoice.total() }}
