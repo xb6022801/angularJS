@@ -1,0 +1,14 @@
+<!doctype html>
+<html ng-app="docsIsolateScopeDirective">
+  <head>
+    <script src="http://code.angularjs.org/1.2.25/angular.min.js"></script>
+    <script src="script3.js"></script>
+  </head>
+  <body>
+    <div ng-controller="Ctrl">
+      <my-customer info="naomi", on-click="myClick()">
+        <span>transclude succeed {{ naomi.name }}</span>
+      </my-customer>
+    </div>
+  </body>
+</html>

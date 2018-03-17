@@ -20,3 +20,10 @@ angular.module('invoice1', ['currencyService'])
     }
     return { currencies, convert }
   })
+
+  angular.module('drag', [])
+  .directive('draggable', function($document) {
+    return function(scope, element, attr) {
+      /* TO DO */
+    }
+  })

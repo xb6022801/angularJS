@@ -1,0 +1,14 @@
+<!doctype html>
+<html ng-app="myApp">
+  <head>
+    <script src="http://code.angularjs.org/1.2.25/angular.min.js"></script>
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <div ng-controller="Ctrl">
+      <label for="randomNumber">随机数字</label>
+      <span>{{ randomNumber }}</span>
+      <button ng-click="generateRandom()">生成数字</button>
+    </div>
+  </body>
+</html>
