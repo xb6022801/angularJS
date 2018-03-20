@@ -220,3 +220,55 @@ Using filters in controllers, services, and directives
 
 If you wish to namespace your filters, then you can use capitalization 
 (myappSubsectionFilterx) or underscores (myapp_subsection_filterx).
+
+
+===============================
+Form
+其中 novalidate 属性用于禁用浏览器自带的表单验证功能。<form novalidate>
+为了允许对表单和控件自定义样式， ngModel 增加了如下的CSS类： - ng-valid - ng-invalid - ng-pristine - ng-dirty
+The value of ngModel won't be set unless it passes validation for the input field
+
+To allow styling of form as well as controls, ngModel adds these CSS classes:
+ng-valid, ng-invalid, ng-pristine, ng-dirty (值变了), ng-touched
+
+A form is an instance of FormController. The form instance can optionally be published 
+into the scope using the name attribute.
+This allows us to extend the above example with these features:
+
+Custom error message displayed after the user interacted with a control (i.e. when $touched is set)
+Custom error message displayed upon submitting the form ($submitted is set),
+ even if the user didn't interact with a control
+
+
+form.uEmail.$error.email
+form.uEmail.$touched
+form.uName.$error.required
+form.$submitted
+
+model flags: uEmail.$dirty, uEmail.$invalid, uEmail.$pristine
+Custom model update triggers: ng-model-options="{ updateOn: 'blur default' }"
+debounce validation/update: 
+ng-model-options="{ debounce: 500 }" 
+或者
+"{ updateOn: 'default blur', debounce: { default: 500, blur: 0 } }"
+
+Similarly, an input control that has the ngModel directive holds an instance of NgModelController.
+
+自定义validator:
+controller.$validators: 设置directive， require: 'ngModel', 写link function里：
+ctrl.{{custo-validator-name}} = function(modelValue, viewValue) {return true | false},
+然后 view里: ng-show = form.fieldname.$error.custo-validator-name
+
+controller.$asyncValidators: 设置directive， require: 'ngModel', 写link function里：
+ctrl.{{custo-validator-name}} = function(modelValue, viewValue) {
+  var obj = promise 
+  if (...) obj.resolve()
+  else obj.reject()
+  return obj
+},
+然后 view里: ng-show = form.fieldname.$pending.custo-validator-name;
+ng-show=form.fieldname.$error.custo-validator-name;
+
+可以overwrite build-in validators；和custom validator一个道理，然后：
+ctrl.$validators.email = function (modelValue, viewValue) {/****/}
+

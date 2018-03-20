@@ -1,0 +1,121 @@
+<!doctype html>
+<html ng-app="myReverseFilterApp">
+  <head>
+    <script src="http://code.angularjs.org/1.5.8/angular.min.js"></script>
+  </head>
+  <body>
+    <div ng-controller="MyController">
+      <form novalidate name="form">
+        Name: <input type="text" name="name" ng-model="user.name" required='' username
+          ng-model-options="{ updateOn: 'blur default', debounce: { blur: 0, default: 5000 }}">
+        <div>
+            <span ng-show="form.name.$pending.username">pending request...</span>
+            <span ng-show="form.name.$error.username">username already taken...</span>
+        </div>
+        Email: <input type="email" name="uEmail" ng-model="user.email" required=''>
+        <div ng-show="form.$submitted || form.uEmail.$touched">
+          <span ng-show="form.uEmail.$error.required"> email is required</span>
+          <span ng-show="form.uEmail.$error.email"> email format is incorrect</span>
+        </div>
+        <div>
+          Size <input type="number" ng-model="size" name="size" min="2", max="10" integer>
+          <span ng-show="form.size.$error.min || form.size.$error.max">size must between 2 - 10</span>
+          <span ng-show="form.size.$error.integerError">The value is not a valid integer!</span>
+        </div>
+        Gender: <input type="radio" ng-model="user.gender" value="male"> male 
+        <input type="radio" ng-model="user.gender" value="female"> female
+        <br>
+        <button ng-click="reset()">reset</button>
+        <button type="submit" ng-click="update(user)">save</button>
+        <div contenteditable="true" ng-model="user.content" name="content"></div>
+        <!-- <button type="button" ng-click="fadeOut">blur</button> -->
+        <br>
+        <div>
+          user = {{ user | json}}
+        </div>
+        <div>
+          master = {{ master | json }}
+        </div>
+      </form>
+    </div>
+  </body>
+  <script type="text/javascript">
+   var INTEGER_REGEXP = /^\-?\d+$/
+    angular.module('myReverseFilterApp', [])
+    .controller('MyController', ['$scope', function($scope) {
+      $scope.master = {}
+      $scope.usernames = ['xubin']
+      $scope.update = function (user) {
+        $scope.master = angular.copy(user)
+      }
+      $scope.reset = function () {
+        $scope.user = angular.copy($scope.master)
+      }
+      $scope.reset()
+    }])
+    .directive('integer', function() {
+      return {
+        require: 'ngModel',
+        link: function(scope, element, attrs, ctrl) {
+          ctrl.$validators.integerError = function(modelValue, viewValue) {
+            if (ctrl.$isEmpty(modelValue)) {
+              return true
+            }
+            if (INTEGER_REGEXP.test(viewValue)) {
+              return true
+            }
+            return false
+          }
+        }
+      }
+    })
+    .directive('username', function($timeout) {
+      return {
+        require: 'ngModel',
+        link: function(scope, element, attrs, ctrl) { // ctrl = ng-model-controller
+          ctrl.$asyncValidators.username = function(modelValue, viewValue) {
+            console.log('modelValue = ' + modelValue)
+            console.log('viewValue = ' + viewValue)
+            var usernames = scope.usernames || ctrl.usernames
+            var res = new Promise(function(resolve, reject) {
+              $timeout(function() {
+                if (!usernames.includes(modelValue)) {
+                  resolve()
+                } else {
+                  reject()
+                }
+              }, 2000)
+            })
+            return res
+          }
+        }
+      }
+    })
+    .directive('contenteditable', function() {
+      return {
+        require: 'ngModel',
+        link: function(scope, element, attrs, ctrl) {
+          // model -> view
+          element.on('blur', function() {
+            ctrl.$setViewValue(element.html())
+          })
+          // view -> model
+          ctrl.$render = function() {
+            element.html(ctrl.$viewValue)
+          }
+
+          ctrl.$setViewValue(element.html())
+        }
+      }
+    })
+  </script>
+  <style>
+    form input.ng-invalid.ng-dirty{
+      background-color: #FA787E;
+    }
+
+    form input.ng-valid.ng-dirty {
+        background-color: #78FA89;
+      }
+  </style>
+</html>
