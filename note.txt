@@ -173,4 +173,50 @@ scope and directives:
 作用于相应的作用域，这样所有的监听器才能被正确更新，然后进行后续的相关操作。
 
 =====================================
+DEPENDENCY INJECTION
+为了分离“创建依赖”的职责，每个 Angular 应用都有一个 injector对象。这个 injector 是一个服务定位器，负责创建和查找依赖。
+(三种依赖注入方式.js)
 
+工厂方法负责创建 Angular 中的绝大多数对象。例如指令，服务，和过滤器等
+
+strict dependency injection: 不允许implicite annotation
+<html ng-app ng-strict-di> 
+
+
+TEMPLATE
+4 types of elements and attributs allowed to use in templates:
+directive, Markup, filters, form controls 
+
+EXPRESSION
+不能直接使用window, document, location, use $window, $document, $window instead
+不能用control flow such as: {{ a? b: c }}
+ng-click, ng-focus 等directive里内置$event (jquery like object)
+one-time binding: {{ ::name }} //第一次得到一个un-undefined value就不变化了
+
+Interpolation:
+<img src="img/{{relativeUrl}}.jpg" alt="image">
+boolean attribute: ng-disabled/checked/selected/required/read-only, etc
+
+ngAttr for binding to arbitrary attributes: ng-attr-cx, etc
+
+You can also access the scope with this in your templates:
+<div ng-show="this['form' + $index].$invalid"></div>
+
+do not mix interpolation and expressions is bad practice such as:
+<div ng-show="form{{$index}}.$invalid"></div>
+
+===============================
+Filters
+The underlying API is the $filterProvider.
+
+{{ expression | filter }}
+{{ expression | filter1 | filter2 | ... }}
+{ expression | filter:argument1:argument2:... }} : e.g. {{ currentNbs | number:2}}
+build-in filters: currency, number, date, json, limitTo, orderBy, uppercase, lowercase
+
+基本类型只有值变化的时候才重新执行filter，object类型每次$digest都执行一次。
+
+Using filters in controllers, services, and directives
+
+If you wish to namespace your filters, then you can use capitalization 
+(myappSubsectionFilterx) or underscores (myapp_subsection_filterx).
