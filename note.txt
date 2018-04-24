@@ -80,8 +80,8 @@ expression还可以这么写 in inline style:
 method: function double()
 然后: {{ double(args) }}
 
-The most common way to keep Controllers slim is by encapsulating work that doesn't belong to controllers into services
- and then using these services in Controllers via dependency injection
+The most common way to keep Controllers slim is by encapsulating work that doesn't belong to controllers 
+into services and then using these services in Controllers via dependency injection
 
 ngController='SpicyController' (建议最好大写)
 
@@ -124,13 +124,15 @@ constant图纸：
 既然配置函数运行在没有服务可用的配置阶段，那么它就连由Value图纸创建的简单值对象都无法访问。
 constant: 配置和运行阶段都可以访问 --> 存在的意义。
 
-专用对象：早先我们也提到过和服务不同的专用对象。这些对象作为插件扩展了Angular框架，因此必须实现Angular指定的接口。这些接口就是控制器，指令，过滤器和动画。
+专用对象：早先我们也提到过和服务不同的专用对象。这些对象作为插件扩展了Angular框架，因此必须实现Angular指定的接口。
+这些接口就是控制器，指令，过滤器和动画。
 创建这些专用对象（控制器对象除外）的注入器指令幕后其实使用的也是Factory图纸。
 
 综上所述，我们总结如下最重要的几点：
 注入器使用图纸创建两类对象：服务和专用对象。
 总共有5类图纸来定义如何创建对象：Value，Factory，Service，Provicer以及Constant。
-Factory和Service是最常用的图纸。它们之间的唯一区别就是Service图纸在创建自定义对象时更适用，而Factory还可以创建Javascript原始类型以及函数。
+Factory和Service是最常用的图纸。它们之间的唯一区别就是Service图纸在创建自定义对象时更适用，而Factory还可以创建
+Javascript原始类型以及函数。
 Provider图纸是最核心的图纸类型，而其它所有图纸都只是基于它的语法糖。
 Provider也是最复杂的图纸类型，除非你正在构建需要全局配置的可复用代码，否则不要使用它。
 除了控制器，其他所有专用对象都是通过Factory图纸来定义的。
@@ -272,3 +274,90 @@ ng-show=form.fieldname.$error.custo-validator-name;
 可以overwrite build-in validators；和custom validator一个道理，然后：
 ctrl.$validators.email = function (modelValue, viewValue) {/****/}
 
+========================
+components
+component is a special kind of directive
+
+how to register: .component(name, component_config_object)
+It's also possible to add components via $compileProvider in a module's config phase.
+
+bindings: 不推荐=, (two-way binding.), 应该用one way binding: <, 但是object 和 array还是会改变parent scope, 所以还是
+要注意。string推荐用@
+output用& 
+
+lifecycle: 
+$onInit(), after all controllers on an elements' binding are initialized, before pre&postlink
+$onChange(changeObj), one-way binding is updated.
+$onDestroy(), 
+$postlink()： called after controller and its elements have been linked
+
+总结： bindings在controller对象里。controller.$onInit = function(){//do something}
+行内要用到ctroller的属性，用$ctrl
+controller和scope是两回事。在行内直接用的属性，就是在scope上定义的。
+ng-switch
+  ng-switch-when
+  ng-switch-default
+
+bindings类型里，如果可以缺省的话，则加个❓， 
+e.g. 
+bindings: {
+  fieldType: '@?'
+}
+
+使用ngRoute:$routeProvider (ngRoute_usereference.js)
+
+inter-component communication
+Note that the required controllers will not be available during the instantiation of the controller,
+ but they are guaranteed to be available just before the $onInit method is executed!
+
+
+
+ ngRouteComponent:
+
+ <ng-outlet></ng-outlet>
+ The Root Router is the starting point for all navigation. 
+ You can access this Router by injecting the $rootRouter service.
+
+ We define the top level Root Component by providing a value for the $routerRootComponent service.
+myModule.value('$routerRootComponent', 'myApp');
+
+Remember to instantiate this Root Component in our index.html file.
+<my-app></my-app>
+When we navigate to any given URL, the $rootRouter matches its Route Config against the URL. 
+If a Route Definition in the Route Config 
+recognizes a part of the URL then the Component associated with the Route Definition
+is instantiated and rendered in the Outlet.
+
+Remember that the module.component() helper automatically provides the Component's 
+Controller as the $ctrl property on the scope of the template.
+
+=================
+module (module/index.html)
+ou can think of a module as a CONTAINER for the different parts of your app – controllers, 
+services, filters, directives, etc.
+
+While the example above is simple, it will not scale to large applications. Instead we recommend that you break 
+your application to multiple modules like this:
+
+A module for each feature
+A module for each reusable component (especially directives and filters)
+And an application level module which depends on the above modules and contains any initialization code.
+
+A module is a collection of providers, services, directives etc., and optionally config and run blocks which get 
+applied to the application during the bootstrap process.
+
+Beware that using angular.module('myModule', []) will create the module myModule and overwrite any existing module 
+named myModule. Use angular.module('myModule') to retrieve an existing module.
+
+========================
+decorators
+decorators are functions that allow a service, directive or filter to be modified prior to its usage.
+$provide.decorator
+module.decorator
+Each provide access to a $delegate, which is the instantiated service/directive/filter, prior to being passed 
+to the service that required it.
+
+module.decorator是$provide.decorator的语法糖。
+Since you can apply multiple decorators, it is noteworthy that decorator application always follows order 
+of declaration
+the service has been declared multiple times, a decorator will decorate the service that has been declared last:

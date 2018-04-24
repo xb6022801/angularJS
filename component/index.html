@@ -1,0 +1,56 @@
+<!doctype html>
+<html ng-app="myApp">
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+    <!-- <script src="expression.js"></script> -->
+  </head>
+  <body>
+    <div ng-controller="MyController as $ctrl">
+      <hero-detail hero="hero" age="23" on-output="output(newval)"></hero-detail>  
+      
+    </div>
+  </body>
+  <script>
+      angular.module('myApp', [])
+      .controller('MyController', ['$scope', function($scope) {
+        $scope.hero = {
+          name: 'xu bin',
+          gender: 'man'
+        }
+        $scope.output = function (newval) {
+          console.log('output: ' + newval)
+        }
+      }]).component('heroDetail', {
+        template: 
+        ` <div>
+          <p>{{ $ctrl.hero.name }}</p>
+          <p>{{ $ctrl.hero.gender }}</p>
+          <p>{{ $ctrl.age }}</p>
+          <input type="{{ $ctrl.fieldType }}">
+          <button ng-click="$ctrl.output('location')">output</button>
+         </div>        
+        `,
+        controller: function($scope, $element, $attrs) {
+          var ctrl = this
+          $scope.output = function () {
+            console.log('output 1')
+          }
+          this.$onInit = function() {
+            if (!ctrl.fieldType) {
+              ctrl.fieldType = 'number'
+            }
+          }
+          this.output = (newval) => {
+            console.log('output ctrl')
+            this.onOutput({ newval })
+          }
+        },
+        bindings: {
+          hero: '=',
+          age: '@',
+          fieldType: '@',
+          onOutput: '&'
+        }
+      })
+    </script>
+</html>

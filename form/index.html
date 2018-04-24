@@ -74,8 +74,6 @@
         require: 'ngModel',
         link: function(scope, element, attrs, ctrl) { // ctrl = ng-model-controller
           ctrl.$asyncValidators.username = function(modelValue, viewValue) {
-            console.log('modelValue = ' + modelValue)
-            console.log('viewValue = ' + viewValue)
             var usernames = scope.usernames || ctrl.usernames
             var res = new Promise(function(resolve, reject) {
               $timeout(function() {

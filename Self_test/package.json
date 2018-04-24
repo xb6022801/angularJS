@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "lint": "jshint ./*/**.js",
+    "build": "npm run build:css && npm run build:js",
+    "prebuild:js": "npm run lint"
+  }
+}
